@@ -5,12 +5,17 @@
 #Writing
 #sBeauty
 import turtle
+import keyboard
+import time
 # try to use the class in the code
+
+MAX_SPIRALS = 500
+
 class drawable_obj:
     pass
 
 t = turtle.Turtle()
-
+turtle.delay(-1)
 def draw_image(points, scale = 1):
     po = [[p[0] * scale, p[1] * scale] for p in points]
     t.penup()
@@ -39,6 +44,31 @@ def move_image_y_by(points, by):
     for i in points:
         i[1] += by
 
+def erasableWrite(tortoise, name, font, align, reuse=None):
+    eraser = turtle.Turtle() if reuse is None else reuse
+    eraser.color("red")
+    eraser.hideturtle()
+    eraser.up()
+    eraser.setpos(tortoise.position())
+    eraser.write(name, font=font, align=align)
+    return eraser
+
+
+def dump(dataSet):
+    s = "color: " + dataSet[0][0][dataSet[0][1]] + "\n" + "radius: "  + str(dataSet[1][0]) + "\nfillCircle: " + str(dataSet[2][0])
+    return s
+
+def draw_spiral(at, rng):
+    t.penup()
+    t.goto(at[0],at[1])
+    t.pendown()
+    r = 10
+    for i in range(rng):
+        t.circle(r + i, 45)
+    t.penup()
+    t.home()
+    t.pendown()
+    
 arr = [
 [392,802],
 [576,622],
@@ -231,4 +261,102 @@ draw_image(jl4)
 draw_image(jl5)
 draw_image(jl6)
 
+
+# add input to add some conditional statement
+t.color('red','red')
+#draw_spiral([-960, 450],MAX_SPIRALS)
+
+#draw_spiral([960, -450], MAX_SPIRALS)
+
+t.penup()
+t.goto(-100,24)
+screen = turtle.Screen()
+screen.addshape('brskicon.gif')
+t.shape('brskicon.gif')
+#screen.register_shape('brskicon.gif')
+#turtle.shape('brskicon.gif')
+#turtle.setheading(90)
+
+
+x = 0 # home loc 
+y = 0 # home loc
+t.width(10)
+colorIndex = 0
+colors = ['red', 'blue', 'yellow', 'green']
+clickedOnce = False
+radius = 100
+
+dataSet = [
+    [colors, colorIndex],
+    [radius],
+    [False] # fillCircle
+]
+
+t.goto(-200,-200)
+erasable = erasableWrite(t, "", font=("Arial", 20, "normal"), align="center")
+tt = turtle.Turtle()
+tt.hideturtle()
+tt.up()
+tt.goto(-300, -300)
+
+timerVar = time.perf_counter()
+fillCircle = False
+while(not keyboard.is_pressed('z')):
+    stateChanged = False
+    if keyboard.is_pressed('a'):
+        x -= 0.4
+        t.goto(x,y)
+    if keyboard.is_pressed('d'):
+        x+=0.4
+        t.goto(x,y)
+    if keyboard.is_pressed('s'):
+        y-=0.4
+        t.goto(x,y)
+    if keyboard.is_pressed('w'):
+        y+=0.4
+        t.goto(x,y)
+    if keyboard.is_pressed('c') and (time.perf_counter() - timerVar >= 0.2):
+        colorIndex = (colorIndex+1)%(len(colors))
+        t.color(colors[colorIndex],'red')
+        stateChanged = True
+        timerVar = time.perf_counter()
+    if keyboard.is_pressed('f') and (time.perf_counter() - timerVar >= 0.2):
+        fillCircle = not fillCircle
+        timerVar = time.perf_counter()
+        stateChanged = True
+    if keyboard.is_pressed('1'):
+        t.fillcolor(colors[colorIndex])
+        t.pencolor(colors[colorIndex])
+        if fillCircle:
+            t.begin_fill()
+        t.down()
+        t.circle(radius=radius)
+        t.up()
+        if fillCircle:
+            t.end_fill()
+    if keyboard.is_pressed('up arrow')  and (time.perf_counter() - timerVar >= 0.2):
+        radius += 10
+        stateChanged = True
+        timerVar = time.perf_counter()
+    if keyboard.is_pressed('down arrow')  and (time.perf_counter() - timerVar >= 0.2):
+        radius -= 10
+        stateChanged = True
+        timerVar = time.perf_counter()
+    if keyboard.is_pressed('space'):
+        t.pendown()
+    else:
+        t.penup()
+    
+    if stateChanged:
+            dataSet = [
+            [colors, colorIndex],
+            [radius],
+            [fillCircle]
+        ]
+            logData = dump(dataSet=dataSet)
+            erasable.clear()
+            erasable = erasableWrite(tt, logData, font=("Arial", 20, "normal"), align="center")
+
+
 turtle.done()
+
