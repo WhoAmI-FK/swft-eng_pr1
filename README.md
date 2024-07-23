@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-[](images/demo.gif)
+![](images/demo.gif)
 
 This is university simple project for Software Engineering class. It uses the Turtle graphics library in Python to create a variety of drawings and interactive elements. It incorporates basic functionalities like drawing shapes, moving images, and changing colors based on keyboard inputs.
 
