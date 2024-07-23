@@ -1,4 +1,4 @@
-# First Project README
+# Software Engineering Mini-Project
 
 ## Project Overview
 
